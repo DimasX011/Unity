@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 
 public class ScriptOne : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private bool _collisionSet;
+    private void OnCollisionEnter(Collision collision)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(collision.gameObject.tag == "Cube" && !_collisionSet)
+        {
+            for(int i = collision.transform.childCount-1; i >= 0; i--)
+            {
+                Transform child = collision.transform.GetChild(i);
+                child.gameObject.AddComponent<Rigidbody>();
+                child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(70f, Vector3.up, 5f);
+                child.SetParent(null);
+            }
+            Destroy(collision.gameObject);
+            _collisionSet = true;
+        }
     }
 }
